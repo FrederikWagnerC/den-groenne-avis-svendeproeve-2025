@@ -10,7 +10,12 @@ export const getRecords = async (req: Request, res: Response) => {
         id: true,
         firstname: true,
         lastname: true,
-        email: true
+        email: true,
+        address: true,
+        zipcode: true,
+        city: true,
+        hasNewsletter: true,
+        hasNotification: true
       }
     });
     res.json(users);

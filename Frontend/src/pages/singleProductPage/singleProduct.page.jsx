@@ -1,14 +1,22 @@
 import { useParams } from "react-router"
 import { SingleProductComponent } from "../../components/singleProduct/singleProduct.component";
+import { ProductCategoryNav } from "../../components/productCategoryNav/productCategoryNav.component";
+import { GreenLineComponent } from "../../components/greenLine/greenLine.component";
 
 
 export const SingleProductPage = () => {
     const { productId } = useParams();
 
     return (
-        <div>
-            <h1>Single Product Page</h1>
-            <SingleProductComponent />
-        </div>
+        <>
+            <GreenLineComponent />
+            <div className="flex flex-row">
+
+                <ProductCategoryNav />
+                <SingleProductComponent />
+            </div>
+            <GreenLineComponent />
+
+        </>
     )
 }

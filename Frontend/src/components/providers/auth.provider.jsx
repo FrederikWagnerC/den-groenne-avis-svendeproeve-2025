@@ -1,30 +1,51 @@
-import { createContext, useContext, useEffect, useState } from "react";
+import { createContext, useContext, useState, useEffect } from "react";
 
-// Opretter en Context, der kan deles på tværs af komponenter
-export const AuthContext = createContext();
+const AuthContext = createContext();
 
-// Provider-komponent, der wrapper app'en og giver auth-data videre
+export const useAuth = () => {
+    const context = useContext(AuthContext);
+    if (!context) {
+        throw new Error('useAuth must be used within an AuthProvider');
+    }
+    return context;
+};
+
 export const AuthProvider = ({ children }) => {
     const [loginData, setLoginData] = useState(null);
+    const [loading, setLoading] = useState(true); // Add loading state
 
+    // Check for existing token on app initialization
     useEffect(() => {
-        try {
-            const raw = sessionStorage.getItem("access_token");
-            if (raw) { 
-                setLoginData(JSON.parse(raw));
-                
+        const storedToken = sessionStorage.getItem('access_token');
+        if (storedToken) {
+            try {
+                const parsedToken = JSON.parse(storedToken);
+                setLoginData(parsedToken);
+            } catch (error) {
+                console.error('Error parsing stored token:', error);
+                sessionStorage.removeItem('access_token');
             }
-        } catch (error) {
-            console.error("Kunne ikke parse access_token fra sessionStorage", error);
-            setLoginData(null);
         }
-    }, [children]);
+        setLoading(false);
+    }, []);
+
+    // Custom logout function that clears both state and storage
+    const logout = () => {
+        setLoginData(null);
+        sessionStorage.removeItem('access_token');
+    };
+
+    const value = {
+        loginData,
+        setLoginData,
+        logout,
+        loading,
+        isLoggedIn: !!loginData
+    };
 
     return (
-        <AuthContext.Provider value={{ loginData, setLoginData }}>
+        <AuthContext.Provider value={value}>
             {children}
         </AuthContext.Provider>
     );
 };
-
-export const useAuth = () => useContext(AuthContext);

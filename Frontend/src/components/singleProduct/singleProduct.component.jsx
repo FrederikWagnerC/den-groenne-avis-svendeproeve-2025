@@ -1,9 +1,7 @@
 import { useParams } from "react-router"
 import { useFetch } from "../../utils/fetch/fetch";
-import { useImageFetch } from "../../utils/fetch/imageFetch";
-import { ProductIngredientList } from "../productIngredientList/productIngredientList.component";
-
-
+import { useImageURLFetch } from "../../utils/fetch/imageURLFetch";
+import spinner from '../../assets/spinner.svg';
 
 export const SingleProductComponent = () => {
     const { productSlug } = useParams();
@@ -13,15 +11,15 @@ export const SingleProductComponent = () => {
     console.log(product.data);
 
     // Add loading and error handling after all hooks are called
-    if (product.loading) return <div>Loading product...</div>;
-    if (product.error) return <div>Error loading product: {product.error.message}</div>;
-    if (!product.data) return <div>No product data found</div>; 
+    if (product.loading) return <div className="flex justify-center items-center h-64">Loading product...</div>;
+    if (product.error) return <div className="text-red-500 text-center">Error loading product: {product.error.message}</div>;
+    if (!product.data) return <div className="text-center">No product data found</div>; 
 
-    const { title, imageUrl, price, description, procedure, productIngredients} = product.data;
+    const { name, image, price, description, procedure, productIngredients} = product.data;
 
     return <SingleProductContent 
-        title={title}
-        imageUrl={imageUrl}
+        name={name}
+        image={image}
         price={price}
         description={description}
         procedure={procedure}
@@ -29,32 +27,39 @@ export const SingleProductComponent = () => {
     />;
 };
 
-const SingleProductContent = ({ title, imageUrl, price, description, procedure, productIngredients }) => {
-    const { data: imageData, loading: imageLoading, error: imageError } = useImageFetch(imageUrl);
+const SingleProductContent = ({ name, image, price, description, procedure, productIngredients }) => {
+    const { data: imageData, loading: imageLoading, error: imageError } = useImageURLFetch(image);
     
-    console.log(imageData);
+    console.log(image);
 
-    if (imageLoading) return <div>Loading image...</div>;
-    if (imageError) return <div>Error loading image: {imageError.message}</div>;
+    if (imageLoading) return <div className="flex justify-center items-center h-64"><img src={spinner} alt="Loading..." /></div>;
+    if (imageError) return <div className="text-red-500 text-center">Error loading image: {imageError.message}</div>;
 
     return (
-        <div>
-            <h2>{title}</h2>
-            <div>
-                <div>
-                    <div>
-                        <img src={URL.createObjectURL(imageData)} alt={title} />
-                        <p>{description}</p>
+        <div className=" mx-auto overflow-hidden">
+            {/* Product Image */}
+            <div className="w-full h-128 bg-gray-50">
+                <img 
+                    src={image} 
+                    alt={name} 
+                    className="w-full h-full object-cover"
+                />
+            </div>
+
+            {/* Product Details */}
+            <div className="py-6 flex flex-col gap-4">
+                <h2 className="text-3xl font-medium text-black">{name}</h2>
+
+                <p className="text-sm text-lightgray leading-relaxed">{description}</p>
+
+
+
+                <div className="">
+                    <div className="text-lg font-bold text-lightgreen">
+                        Pris: {price} kr
                     </div>
-                    <div>
-                        <p>{procedure}</p>
-                    </div>
-                </div>
-                <div>
-                    <ProductIngredientList ingredients={productIngredients} />
                 </div>
             </div>
-            <h3>{price}</h3>
         </div>
     );
 };

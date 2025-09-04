@@ -1,59 +1,33 @@
-import { useImageFetch } from "../../utils/fetch/imageFetch";
 import { NavLink } from "react-router";
-import heartSVG from '../../assets/heart.svg';
-import { useParams } from "react-router";
 
 
-export const ProductCard = ({ title, description, imageUrl, slug, type }) => {
-    let imageData, imageLoading, imageError;
-    if (type !== 'placeholder') {
-        const { data, loading, error } = useImageFetch(imageUrl);
-        imageData = data;
-        imageLoading = loading;
-        imageError = error;
-    }
-    const { categorySlug } = useParams();
+export const ProductCard = ({ name, description, image, slug, category, price }) => {
 
-    if (imageLoading) return <div>Loading image...</div>;
-    if (imageError) return <div>Error loading image: {imageError.message}</div>;
+
+    // console.log(URL.createObjectURL(data));
 
     return (
         <>
-            {type === 'placeholder' ? (
-                <div className="flex flex-row min-w-[400px] flex-1 placeholder">
-                </div>
-            ) : (
-                <div className="flex flex-row rounded-lg shadow-lg overflow-hidden min-w-[400px] flex-1">
-
-                    <>
+            <div className="flex flex-col bg-white shadow-md hover:shadow-lg transition-shadow duration-300 overflow-hidden flex-1 group">
+                <NavLink to={`/produkter/${category.slug}/${slug}`} className="block">
+                    <div className="relative overflow-hidden">
                         <img
-                            src={URL.createObjectURL(imageData)}
-                            alt={title}
-                            className="object-cover w-[200px] h-[200px] aspect-square flex-shrink-0"
+                            src={image}
+                            alt={name}
+                            className="w-full h-54 object-cover"
                         />
-                        <div className="p-4 flex justify-between flex-col">
-                            <div>
-                                <h2 className="text-xl font-semibold mb-2">{title}</h2>
-                                <p className="">{description}</p>
-                            </div>
-                            <div className="flex justify-between">
-                                {categorySlug ? (
-                                    <NavLink to={`/produkter/${categorySlug}/${slug}`} className="text-darkgrey">
-                                        Læs mere
-                                    </NavLink>
-                                ) : (
-                                    <NavLink to={`/produkter/${slug}`} className="text-darkgrey">
-                                        Læs mere
-                                    </NavLink>
-                                )}
-                                <button>
-                                    Likes <img src={heartSVG} alt="Likes" className="inline-block w-4 h-4" />
-                                </button>
-                            </div>
+                        <div className="absolute bottom-0 left-0 right-0 bg-darkgreen/50 text-white p-2 px-4 md:translate-y-full group-hover:translate-y-0 transition-transform duration-300 ease-in-out">
+                            <p>Pris: {price} kr</p>
                         </div>
-                    </>
-                </div>
-            )}
+                    </div>
+                    <div className="p-4 flex-1 flex flex-col">
+                        <h3 className="text-lg font-semibold mb-2 text-gray-800 line-clamp-2">{name}</h3>
+                        <p className="text-sm text-gray-600 mb-4 flex-1 line-clamp-3">{description}</p>
+                        <div className="flex justify-between items-center mt-auto">
+                        </div>
+                    </div>
+                </NavLink>
+            </div>
         </>
     );
 }

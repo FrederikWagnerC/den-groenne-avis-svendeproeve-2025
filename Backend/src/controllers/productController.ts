@@ -9,7 +9,9 @@ export const getRecords = async (req: Request, res: Response) => {
         name: true,
         slug: true,
         image: true,
-        price: true
+        price: true,
+        description: true,
+        category: true
       }
     });
     res.json(data);
@@ -33,7 +35,9 @@ export const getRecordsFromCategory = async (req: Request, res: Response) => {
         name: true,
         slug: true,
         image: true,
-        price: true
+        price: true,
+        category: true,
+        description: true
       }
     })
     res.json(data);

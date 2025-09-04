@@ -20,7 +20,7 @@ export const FrontPageCategories = () => {
       <h3 className="text-lg font-normal mb-4">Populære kategorier</h3>
       <div className="grid grid-cols-3 md:grid-cols-6 gap-4">
         {featuredCategories && featuredCategories.map((category) => (
-          <FrontPageCard key={category.id} name={category.name} image={category.image} type="category" />
+          <FrontPageCard key={category.id} name={category.name} image={category.image} slug={category.slug} type="category" />
         ))}
       </div>
     </section>

@@ -9,6 +9,7 @@
     --color-lightgrey: #F5F5F5;
     --color-white: #FFFFFF;
     --color-black: #181818;
+    --color-input-bg: #EDECEC;
 }
 
 @layer base {
@@ -23,3 +24,4 @@
         background-color: var(--color-lightgrey);
     }
 }
+

@@ -1,7 +1,8 @@
 import { useParams } from "react-router";
 import { useFetch } from "../../utils/fetch/fetch";
-import { ProductCard } from "../../components/productCard/productCard.component";
 import { ProductCardSection } from "../../components/productCardSection/productCardSection.component";
+import { ProductCategoryNav } from "../../components/productCategoryNav/productCategoryNav.component";
+import { GreenLineComponent } from "../../components/greenLine/greenLine.component";
 
 
 export const ProductsPage = () => {
@@ -11,14 +12,21 @@ export const ProductsPage = () => {
 
 
     if (categorySlug) {
-        const { data, error, isLoading } = useFetch(`api/categories/${categorySlug}`);
+        const { data, error, isLoading } = useFetch(`api/products/category/${categorySlug}`);
+
+        console.log(data)
 
         if (isLoading) return <div>Loading...</div>;
         if (error) return <div>Error: {error.message}</div>;
 
         return (
             <>
-                {data && <ProductCardSection type='category' products={data.categoryProducts} />}
+                <GreenLineComponent />
+
+                <div className="flex flex-row mx-auto">
+                    <ProductCategoryNav />
+                    {data && <ProductCardSection type='category' products={data} />}
+                </div>
             </>
 
         )
@@ -27,11 +35,14 @@ export const ProductsPage = () => {
         if (isLoading) return <div>Loading...</div>;
         if (error) return <div>Error: {error.message}</div>;
         return (
-             <>
+            <>
+                <GreenLineComponent />
+                <div className="flex flex-row">
+                    <ProductCategoryNav />
+                    {data && <ProductCardSection type='all' products={data} />}
+                </div>
 
-                {data && <ProductCardSection type='all' products={data} />}
             </>
-
         );
     }
 };

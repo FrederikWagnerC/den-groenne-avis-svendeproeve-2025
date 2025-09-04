@@ -16,12 +16,13 @@ export const FrontPageProductCardSection = () => {
   }
 
 
+
   return (
     <section className="">
       <h3 className="text-lg font-normal mb-4">Udvalgte produkter</h3>
       <div className="grid grid-cols-3 md:grid-cols-6 gap-4">
         {featuredProducts && featuredProducts.map((product) => (
-          <FrontPageCard key={product.id} name={product.name} image={product.image} type="product" />
+          <FrontPageCard key={product.id} name={product.name} image={product.image} category={product.category.slug} slug={product.slug} type="product" />
         ))}
       </div>
     </section>
