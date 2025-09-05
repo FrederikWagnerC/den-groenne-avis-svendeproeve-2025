@@ -13,6 +13,7 @@ import { LoginPage } from './pages/loginPage/login.page'
 import { Navigate } from 'react-router'
 import { ProfilePage } from './pages/profilePage/profile.page'
 import { SignUpPage } from './pages/signUpPage/signUp.page'
+import { CreateProductPage } from './pages/createProduct/createProduct.page'
 
 function App() {
   const {loginData} = useAuth();
@@ -43,6 +44,11 @@ function App() {
               <Route path="/signup" element={<SignUpPage />} />
           ) : (
             <Route path="/signup" element={<Navigate to="/profil" replace />} />
+          )}
+          {loginData ? (
+            <Route path="/opret-annonce" element={<CreateProductPage />} />
+          ) : (
+            <Route path="/opret-annonce" element={<Navigate to="/login" replace />} />
           )}
           <Route path="/*" element={<ErrorPage />} />
         </Routes>

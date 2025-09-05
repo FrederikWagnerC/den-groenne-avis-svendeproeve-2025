@@ -1,20 +1,41 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useAuth } from "../providers/auth.provider";
+import spinner from "../../assets/spinner.svg"
+import { useFetch } from "../../utils/fetch/fetch";
 
-export const ProfileDetails = ({ user }) => {
-    const { logout } = useAuth();
+export const ProfileDetails = () => {
+    const { logout, loginData } = useAuth();
+    const {data: user, error, loading: userLoading} = useFetch(`api/users/${loginData.user.id}`);
     const [formData, setFormData] = useState({
-        firstName: user?.firstname || '',
-        lastName: user?.lastname || '',
-        address: user?.address || '',
-        zipCode: user?.zipcode || '',
-        phone: user?.phone || '',
-        email: user?.email || '',
-        newsletter: user?.hasNewsletter || false,
-        notifications: user?.hasNotification || false
+        firstname: '',
+        lastname: '',
+        address: '',
+        zipCode: '',
+        phone: '',
+        email: '',
+        hasNewsletter: false,
+        hasNotification: false
     });
 
-    console.log(user);
+    // Update formData when user data is loaded
+    useEffect(() => {
+        if (user) {
+            setFormData({
+                firstname: user.firstname || '',
+                lastname: user.lastname || '',
+                address: user.address || '',
+                zipCode: user.zipcode || '',
+                phone: user.phone || '',
+                email: user.email || '',
+                hasNewsletter: user.hasNewsletter || false,
+                hasNotification: user.hasNotification || false
+            });
+        }
+    }, [user]);
+
+
+    
+
 
     const handleInputChange = (e) => {
         const { name, value, type, checked } = e.target;
@@ -26,14 +47,34 @@ export const ProfileDetails = ({ user }) => {
 
     const handleSave = () => {
         // Handle save logic here
-        console.log("Saving profile:", formData);
-        alert("Profil gemt!");
+        if (!window.confirm("Er du sikker på, at du vil gemme ændringerne?")) {
+            return;
+        }
+
+        const url = `http://localhost:3000/api/users/${user.id}`;
+        try {
+            fetch(url, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${localStorage.getItem('token')}`
+                },
+                body: JSON.stringify(formData)
+                
+            });
+        } 
+         catch (error) {
+            console.error("Error updating profile:", error);
+            alert("Der opstod en fejl ved opdatering af profilen.");
+        }
     };
 
     const handleLogout = () => {
         logout();
-        // Navigate to home or login page
     };
+
+    if (userLoading) return <div><img src={spinner} alt="Loading..." /></div>;
+    if (error) return <div>Error: {error.message}</div>;
 
     return (
         <div className="flex flex-col min-h-full">
@@ -47,8 +88,8 @@ export const ProfileDetails = ({ user }) => {
                             </label>
                             <input
                                 type="text"
-                                name="firstName"
-                                value={formData.firstName}
+                                name="firstname"
+                                value={formData.firstname}
                                 onChange={handleInputChange}
                                 className="w-full p-2 border-2 border-lightgreen bg-input-bg rounded-sm"
                                 placeholder="Dit navn..."
@@ -61,8 +102,8 @@ export const ProfileDetails = ({ user }) => {
                             </label>
                             <input
                                 type="text"
-                                name="lastName"
-                                value={formData.lastName}
+                                name="lastname"
+                                value={formData.lastname}
                                 onChange={handleInputChange}
                                 className="w-full p-2 border-2 border-lightgreen bg-input-bg rounded-sm"
                                 placeholder="Dit efternavn..."
@@ -139,8 +180,8 @@ export const ProfileDetails = ({ user }) => {
                                     <input
                                         type="checkbox"
                                         id="newsletter"
-                                        name="newsletter"
-                                        checked={formData.newsletter}
+                                        name="hasNewsletter"
+                                        checked={formData.hasNewsletter}
                                         onChange={handleInputChange}
                                         className="peer appearance-none cursor-pointer transition-all bg-white h-4 w-4 mt-1 accent-darkgreen hover:accent-lightgreen outline-darkgreen rounded-none border-darkgreen border-2 checked:bg-lightgreen checked:border-lightgreen"
                                     />
@@ -162,8 +203,8 @@ export const ProfileDetails = ({ user }) => {
                                     <input
                                         type="checkbox"
                                         id="notifications"
-                                        name="notifications"
-                                        checked={formData.notifications}
+                                        name="hasNotification"
+                                        checked={formData.hasNotification}
                                         onChange={handleInputChange}
                                         className="peer appearance-none cursor-pointer transition-all bg-white h-4 w-4 mt-1 accent-darkgreen hover:accent-lightgreen outline-darkgreen rounded-none border-darkgreen border-2 checked:bg-lightgreen checked:border-lightgreen"
                                     />

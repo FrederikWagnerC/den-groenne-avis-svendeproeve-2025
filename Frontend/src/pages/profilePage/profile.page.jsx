@@ -6,21 +6,15 @@ import { ProfileDetails } from "../../components/profileDetails/profileDetails.c
 import { useFetch } from "../../utils/fetch/fetch";
 
 export const ProfilePage = () => {
-    const { loginData, logout, loading } = useAuth();
+    const { loginData, loading } = useAuth();
     const [isProfile, setIsProfile] = useState(true);
 
-    const handleLogout = () => {
-        logout();
-    };
 
     if (loading) {
         return <div><img src={spinner} alt="Loading..." /></div>;
     }
 
-    const {data: user, error, loading: userLoading} = useFetch(`api/users/${loginData.user.id}`);
-    if (userLoading) return <div><img src={spinner} alt="Loading..." /></div>;
-    if (error) return <div>Error: {error.message}</div>;
-    console.log(loginData);
+    
 
     return (
         <div>
@@ -41,7 +35,7 @@ export const ProfilePage = () => {
             </div>
             
                 <div>
-                    {isProfile && <ProfileDetails user={user} /> }
+                    {isProfile && <ProfileDetails /> }
                     {!isProfile && <div className="p-4">Her kommer dine annoncer (ikke implementeret endnu)</div>}
                 </div>
 

@@ -52,14 +52,23 @@ export const createRecord = async (req: Request, res: Response) => {
   }
 
   try {
-    const product = await prisma.comment.create({
+    const newComment = await prisma.comment.create({
       data: {
         comment,
         userId: Number(userId),
         productId: Number(productId)
       },
+      include: {
+        user: {
+          select: {
+            firstname: true,
+            lastname: true,
+            email: true,
+          }
+        }
+      }
     });
-    res.status(201).json(product);
+    res.status(201).json(newComment);
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: 'Failed to create comment' });

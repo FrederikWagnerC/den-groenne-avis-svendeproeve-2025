@@ -14,7 +14,6 @@ export const ProductsPage = () => {
     if (categorySlug) {
         const { data, error, isLoading } = useFetch(`api/products/category/${categorySlug}`);
 
-        console.log(data)
 
         if (isLoading) return <div>Loading...</div>;
         if (error) return <div>Error: {error.message}</div>;

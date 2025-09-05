@@ -23,7 +23,7 @@ export const Navbar = () => {
           <div className="hidden md:flex space-x-4 text-black align-middle h-full items-center">
             <NavLink to="/produkter" className="bg-lightgreen text-white px-4 text-center py-1">Produkter</NavLink>
             {loginData && (
-              <NavLink to="/opretAnnonce" className="">Opret Annonce</NavLink>
+              <NavLink to="/opret-annonce" className="">Opret Annonce</NavLink>
             )}
             <div className="flex space-x-2">
               <NavLink to="/mail" className=""><img src={mailImportant} alt="" /></NavLink>
